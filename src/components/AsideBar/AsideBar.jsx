@@ -2,15 +2,16 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { toggleAllTransfer, toggleFilterTransfer } from '../../store/slices/AsideBarSlice';
-import './AsideBar.scss';
+
+import styles from './AsideBar.module.scss';
 
 const AsideBar = () => {
   const filters = useSelector((state) => state.filters);
   const dispatch = useDispatch();
 
   return (
-    <div className="wrapper-aside">
-      <aside className="aside-bar">
+    <div className={styles.wrapperAside}>
+      <aside className={styles.asideBar}>
         <ul>КОЛИЧЕСТВО ПЕРЕСАДОК</ul>
         <li>
           <input

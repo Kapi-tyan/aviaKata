@@ -17,7 +17,7 @@ export const getTickets = createAsyncThunk('GetTickets/getTickets', async (id, {
     try {
       const response = await fetch(`${ticketsUrl}?searchId=${id}`);
       if (!response.ok) {
-        return;
+        dispatch(addTickets(response));
       }
       const data = await response.json();
       dispatch(addTickets(data.tickets));
@@ -25,7 +25,7 @@ export const getTickets = createAsyncThunk('GetTickets/getTickets', async (id, {
         stopFlag = true;
       }
     } catch (error) {
-      return error;
+      dispatch(addTickets(error));
     }
   }
 });

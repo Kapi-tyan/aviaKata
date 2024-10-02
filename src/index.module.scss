@@ -12,15 +12,18 @@ body{
     background-color: #F3F7FA;
     font-family: 'Open Sans', Verdana, sans-serif;
 }
-.wrapper-all{
+.wrapperAll{
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
 }
-.wrapper-content{
+.wrapperContent{
     display: flex;
     flex-direction: row;
+}
+.alert{
+    width: 502px;
 }
 
 

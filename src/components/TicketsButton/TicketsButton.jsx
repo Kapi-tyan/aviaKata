@@ -2,24 +2,25 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { activeButton } from '../../store/slices/TicketsButtonSlice';
-import './TicketsButton.scss';
+
+import styles from './TicketsButton.module.scss';
 
 const TicketsButton = () => {
   const ticketsButton = useSelector((state) => state.ticketsButton);
   const dispatch = useDispatch();
 
   return (
-    <div className="wrapper-button">
+    <div className={styles.wrapperButton}>
       <button
         type="button"
-        className={`button-main ${ticketsButton.cheapest ? 'active' : ''}`}
+        className={`${styles.buttonMain} ${ticketsButton.cheapest ? styles.active : ''}`}
         onClick={() => dispatch(activeButton('cheapest'))}
       >
         САМЫЙ ДЕШЕВЫЙ
       </button>
       <button
         type="button"
-        className={`button-main ${ticketsButton.fastest ? 'active' : ''}`}
+        className={`${styles.buttonMain} ${ticketsButton.fastest ? styles.active : ''}`}
         onClick={() => dispatch(activeButton('fastest'))}
       >
         САМЫЙ БЫСТРЫЙ

@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Flex, Progress } from 'antd';
+import { v4 as uuidv4 } from 'uuid';
 
 import { getSearchId, getTickets } from '../../services/aviaServ';
 import { formatMinutes } from '../../format/formatMinutes';
 import { formatDateAndDuration } from '../../format/formatDateAndDuration';
-import './Ticket.scss';
 
-const Ticket = ({ fastest, cheapest }) => {
+import styles from './Ticket.module.scss';
+
+const Ticket = ({ visibleTickets }) => {
   const dispatch = useDispatch();
   const { searchId, tickets, stop, loading } = useSelector((state) => state.tickets);
-  const { allTransfer, withoutTransfer, oneTransfer, twoTransfer, threeTransfers } = useSelector(
-    (state) => state.filters
-  );
-  const [filteredTickets, setFilteredTickets] = useState([]);
+
   useEffect(() => {
     dispatch(getSearchId());
   }, [dispatch]);
@@ -23,31 +22,7 @@ const Ticket = ({ fastest, cheapest }) => {
       dispatch(getTickets(searchId));
     }
   }, [dispatch, searchId, stop]);
-  const filterTickets = (tickets) => {
-    return tickets.filter((ticket) => {
-      const stops = ticket.segments[0].stops.length;
-      const returnStops = ticket.segments[1].stops.length;
-      if (allTransfer) return true;
-      if (withoutTransfer && stops === 0 && returnStops === 0) return true;
-      if (oneTransfer && (stops === 1 || returnStops === 1)) return true;
-      if (twoTransfer && (stops === 2 || returnStops === 2)) return true;
-      if (threeTransfers && (stops === 3 || returnStops === 3)) return true;
 
-      return false;
-    });
-  };
-  const sortTickets = (tickets) => {
-    return [...tickets].sort((a, b) => {
-      if (cheapest) {
-        return a.price - b.price;
-      } else if (fastest) {
-        const durationA = a.segments[0].duration + a.segments[1].duration;
-        const durationB = b.segments[0].duration + b.segments[1].duration;
-        return durationA - durationB;
-      }
-      return 0;
-    });
-  };
   const maxTickets = 11000;
   const calcProgress = (ticketsLength) => {
     if (ticketsLength === 0) return 0;
@@ -55,10 +30,6 @@ const Ticket = ({ fastest, cheapest }) => {
     return Math.floor(percent);
   };
   const progressPercent = calcProgress(tickets.length);
-  useEffect(() => {
-    const filtered = sortTickets(filterTickets(tickets));
-    setFilteredTickets(filtered);
-  }, [tickets, fastest, cheapest, allTransfer, withoutTransfer, oneTransfer, twoTransfer, threeTransfers]);
   return (
     <>
       <Flex gap="small" vertical>
@@ -68,22 +39,22 @@ const Ticket = ({ fastest, cheapest }) => {
           <Progress percent={100} />
         )}
       </Flex>
-      {filteredTickets.map((ticket, index) => (
-        <div className="ticket" key={index}>
-          <div className="ticket-wrapper">
-            <div className="ticket__price">
+      {visibleTickets.map((ticket) => (
+        <div className={styles.ticket} key={uuidv4()}>
+          <div className={styles.ticketWrapper}>
+            <div className={styles.ticketPrice}>
               {new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0, style: 'currency', currency: 'RUB' }).format(
                 ticket.price
               )}
               <img
-                className="ticket__airline"
+                className={styles.ticketAirline}
                 src={`https://images.daisycon.io/airline/?iata=${ticket.carrier}`}
                 alt={ticket.carrier}
               />
             </div>
             <table>
               <tbody>
-                <tr className="ticket__headlines">
+                <tr className={styles.ticketHeadlines}>
                   <td>
                     {ticket.segments[0].origin}-{ticket.segments[0].destination}
                   </td>
@@ -105,7 +76,7 @@ const Ticket = ({ fastest, cheapest }) => {
                       : ticket.segments[0].stops.map((stop) => stop).join(', ')}
                   </td>
                 </tr>
-                <tr className="ticket__headlines">
+                <tr className={styles.ticketHeadlines}>
                   <td>
                     {ticket.segments[1].origin}-{ticket.segments[1].destination}
                   </td>
