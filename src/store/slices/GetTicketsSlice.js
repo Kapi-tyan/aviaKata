@@ -17,6 +17,12 @@ const GetTicketsSlice = createSlice({
     addTickets: (state, action) => {
       state.tickets = [...state.tickets, ...action.payload];
     },
+    notifyUser: (state, action) => {
+      state.error = action.payload;
+    },
+    clearNotifyUser: (state) => {
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -36,6 +42,7 @@ const GetTicketsSlice = createSlice({
       })
       .addCase(getTickets.fulfilled, (state) => {
         state.loading = false;
+        state.error = null;
       })
       .addCase(getTickets.rejected, (state, action) => {
         state.loading = false;
@@ -44,6 +51,6 @@ const GetTicketsSlice = createSlice({
   },
 });
 
-export const { addTickets } = GetTicketsSlice.actions;
+export const { addTickets, notifyUser, clearNotifyUser } = GetTicketsSlice.actions;
 
 export default GetTicketsSlice.reducer;

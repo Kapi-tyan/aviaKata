@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { addTickets } from '../store/slices/GetTicketsSlice';
+import { addTickets, notifyUser, clearNotifyUser } from '../store/slices/GetTicketsSlice';
 
 const idUrl = 'https://aviasales-test-api.kata.academy/search';
 const ticketsUrl = 'https://aviasales-test-api.kata.academy/tickets';
@@ -17,15 +17,16 @@ export const getTickets = createAsyncThunk('GetTickets/getTickets', async (id, {
     try {
       const response = await fetch(`${ticketsUrl}?searchId=${id}`);
       if (!response.ok) {
-        dispatch(addTickets(response));
+        throw new Error(`Ошибка при получении билетов: ${response.statusText}`);
       }
       const data = await response.json();
       dispatch(addTickets(data.tickets));
       if (data.stop) {
         stopFlag = true;
+        dispatch(clearNotifyUser());
       }
     } catch (error) {
-      dispatch(addTickets(error));
+      dispatch(notifyUser(error.message));
     }
   }
 });

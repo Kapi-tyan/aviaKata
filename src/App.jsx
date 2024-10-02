@@ -26,7 +26,7 @@ const App = () => {
                 <Alert
                   className={styles.alert}
                   message="Ошибка"
-                  description="Произошла ошибка, перезагрузите страницу"
+                  description="Произошла ошибка при получении билетов"
                   type="error"
                   showIcon
                 />
