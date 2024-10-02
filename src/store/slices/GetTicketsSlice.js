@@ -6,7 +6,7 @@ const initialState = {
   searchId: null,
   tickets: [],
   loading: false,
-  error: null,
+  error: false,
   stop: false,
 };
 
@@ -17,11 +17,11 @@ const GetTicketsSlice = createSlice({
     addTickets: (state, action) => {
       state.tickets = [...state.tickets, ...action.payload];
     },
-    notifyUser: (state, action) => {
-      state.error = action.payload;
+    clearError: (state) => {
+      state.error = false;
     },
-    clearNotifyUser: (state) => {
-      state.error = null;
+    setError: (state, action) => {
+      state.error = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -33,24 +33,25 @@ const GetTicketsSlice = createSlice({
         state.searchId = action.payload;
         state.loading = false;
       })
-      .addCase(getSearchId.rejected, (state, action) => {
+      .addCase(getSearchId.rejected, (state) => {
         state.loading = false;
-        state.error = action.error.message;
       })
       .addCase(getTickets.pending, (state) => {
         state.loading = true;
+        state.error = false;
       })
       .addCase(getTickets.fulfilled, (state) => {
         state.loading = false;
-        state.error = null;
+        state.error = false;
+        state.stop = true;
       })
-      .addCase(getTickets.rejected, (state, action) => {
+      .addCase(getTickets.rejected, (state) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = true;
       });
   },
 });
 
-export const { addTickets, notifyUser, clearNotifyUser } = GetTicketsSlice.actions;
+export const { addTickets, clearError, setError } = GetTicketsSlice.actions;
 
 export default GetTicketsSlice.reducer;

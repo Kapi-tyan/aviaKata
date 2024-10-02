@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { addTickets, notifyUser, clearNotifyUser } from '../store/slices/GetTicketsSlice';
+import { addTickets, clearError, setError } from '../store/slices/GetTicketsSlice';
 
 const idUrl = 'https://aviasales-test-api.kata.academy/search';
 const ticketsUrl = 'https://aviasales-test-api.kata.academy/tickets';
@@ -23,10 +23,10 @@ export const getTickets = createAsyncThunk('GetTickets/getTickets', async (id, {
       dispatch(addTickets(data.tickets));
       if (data.stop) {
         stopFlag = true;
-        dispatch(clearNotifyUser());
+        dispatch(clearError());
       }
     } catch (error) {
-      dispatch(notifyUser(error.message));
+      dispatch(setError(true));
     }
   }
 });
