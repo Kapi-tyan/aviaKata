@@ -31,18 +31,19 @@ const GetTicketsSlice = createSlice({
       })
       .addCase(getSearchId.fulfilled, (state, action) => {
         state.searchId = action.payload;
-        state.loading = false;
+        state.loading = true;
       })
       .addCase(getSearchId.rejected, (state) => {
         state.loading = false;
+        state.error = true;
       })
       .addCase(getTickets.pending, (state) => {
         state.loading = true;
         state.error = false;
       })
       .addCase(getTickets.fulfilled, (state) => {
-        state.loading = false;
         state.error = false;
+        state.loading = false;
         state.stop = true;
       })
       .addCase(getTickets.rejected, (state) => {
@@ -53,5 +54,4 @@ const GetTicketsSlice = createSlice({
 });
 
 export const { addTickets, clearError, setError } = GetTicketsSlice.actions;
-
 export default GetTicketsSlice.reducer;

@@ -7,10 +7,31 @@ import Logo from './img/Logo.svg';
 import AsideBar from './components/AsideBar/AsideBar';
 import TicketsButton from './components/TicketsButton/TicketsButton';
 import TicketsList from './components/TicketsList/TicketsList';
+import ProgressBar from './components/ProgressBar/ProgressBar';
 
 const App = () => {
   const { error } = useSelector((state) => state.tickets);
   const { nothing } = useSelector((state) => state.filters);
+  const ErrorAlert = (
+    <Alert
+      className={styles.alert}
+      message="Ошибка"
+      description="Произошла ошибка при получении билетов, перезагрузите страницу"
+      type="error"
+      showIcon
+    />
+  );
+  const NothingAlert = (
+    <Alert
+      className={styles.alert}
+      message="Предупреждение"
+      description="Вы не выбрали количество пересадок"
+      type="warning"
+      showIcon
+      closable
+    />
+  );
+
   return (
     <div className={styles.wrapperAll}>
       <header>
@@ -21,32 +42,10 @@ const App = () => {
         <main>
           <TicketsButton />
           <div className="main">
-            {error ? (
-              <>
-                <Alert
-                  className={styles.alert}
-                  message="Ошибка"
-                  description="Произошла ошибка при получении билетов"
-                  type="error"
-                  showIcon
-                />
-                <TicketsList />
-              </>
-            ) : nothing ? (
-              <>
-                <Alert
-                  className={styles.alert}
-                  message="Предупреждение"
-                  description="Вы не выбрали количество пересадок"
-                  type="warning"
-                  showIcon
-                  closable
-                />
-                <TicketsList />
-              </>
-            ) : (
-              <TicketsList />
-            )}
+            {error ? ErrorAlert : ''}
+            {nothing ? NothingAlert : ''}
+            <ProgressBar />
+            <TicketsList />
           </div>
         </main>
       </div>

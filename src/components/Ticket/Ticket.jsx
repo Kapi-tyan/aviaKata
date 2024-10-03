@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Flex, Progress } from 'antd';
-import { v4 as uuidv4 } from 'uuid';
+import { useDispatch } from 'react-redux';
 
-import { getSearchId, getTickets } from '../../services/aviaServ';
+import { getSearchId } from '../../services/aviaServ';
 import { formatMinutes } from '../../format/formatMinutes';
 import { formatDateAndDuration } from '../../format/formatDateAndDuration';
 
@@ -11,36 +9,16 @@ import styles from './Ticket.module.scss';
 
 const Ticket = ({ visibleTickets }) => {
   const dispatch = useDispatch();
-  const { searchId, tickets, stop, loading } = useSelector((state) => state.tickets);
-
   useEffect(() => {
     dispatch(getSearchId());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (searchId && !stop) {
-      dispatch(getTickets(searchId));
-    }
-  }, [dispatch, searchId, stop]);
-
-  const maxTickets = 11000;
-  const calcProgress = (ticketsLength) => {
-    if (ticketsLength === 0) return 0;
-    const percent = Math.min((ticketsLength / maxTickets) * 100, 100);
-    return Math.floor(percent);
-  };
-  const progressPercent = calcProgress(tickets.length);
   return (
     <>
-      <Flex gap="small" vertical>
-        {loading ? (
-          <Progress percent={progressPercent} status={progressPercent < 100 ? 'active' : 'normal'} />
-        ) : (
-          <Progress percent={100} />
-        )}
-      </Flex>
       {visibleTickets.map((ticket) => (
-        <div className={styles.ticket} key={uuidv4()}>
+        <div
+          className={styles.ticket}
+          key={`${ticket.carrier}-${ticket.price}-${ticket.segments[0].origin}-${ticket.segments[0].destination}`}
+        >
           <div className={styles.ticketWrapper}>
             <div className={styles.ticketPrice}>
               {new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0, style: 'currency', currency: 'RUB' }).format(
